@@ -16,15 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::group([ 'middleware' => 'auth'], function () {
-Route::resource('contacts', 'App\Http\Controllers\ContactController');
-Route::resource('customers', 'App\Http\Controllers\CustomerController');
-Route::resource('products', 'App\Http\Controllers\ProductController');
-Route::resource('joins', 'App\Http\Controllers\JoinsController');
-Route::resource('orders', 'App\Http\Controllers\OrderController');
-
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('orders', 'App\Http\Controllers\OrderController');
 });
 Auth::routes();
-
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

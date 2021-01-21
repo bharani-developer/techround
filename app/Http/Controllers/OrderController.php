@@ -6,7 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Auth;
 class OrderController extends Controller
 {
     /**
@@ -16,8 +16,13 @@ class OrderController extends Controller
      */
     public function index()
     {
+        $id = Auth::user()->id;
+
+      
+
         
-        $orders = Order::all();
+        $orders = Order::where('CustomerID', $id)->get();
+
         return view('orders.index', compact('orders'));
     }
 
@@ -28,8 +33,10 @@ class OrderController extends Controller
      */
     public function create()
     {
+        $id = Auth::user()->id;
+
         $products = Product::all();
-        return view('orders.create',compact('products'));
+        return view('orders.create',compact('products','id'));
     }
 
     /**
@@ -40,11 +47,12 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $id = Auth::user()->id;
         $request->validate([
             
           'product_id'=>'required',
           'product'=>'required',
-          'CustomerID'=>'required',
+          
           'OrderAmount'=>'required',
           'OrderShipName'=>'required',
           'OrderShipAddress'=>'required',
@@ -66,7 +74,7 @@ class OrderController extends Controller
             
        'product_id'=>$request->get('product_id'),
           'product'=>$request->get('product'),
-       'CustomerID'=>$request->get('CustomerID'),
+       'CustomerID'=>$id,
       'OrderAmount'=>$request->get('OrderAmount'),
     'OrderShipName'=>$request->get('OrderShipName'),
  'OrderShipAddress'=>$request->get('OrderShipAddress'),
@@ -120,11 +128,11 @@ class OrderController extends Controller
      */
     public function update(Request $request,$id)
     {
+        $cusid = Auth::user()->id;
         $request->validate([
             
             'product_id'=>'required',
             'product'=>'required',
-            'CustomerID'=>'required',
             'OrderAmount'=>'required',
             'OrderShipName'=>'required',
             'OrderShipAddress'=>'required',
@@ -147,7 +155,7 @@ class OrderController extends Controller
           $order-> product_id=$request->get('product_id');
           $order-> product=$request->get('product');
         
-          $order->  CustomerID=$request->get('CustomerID');
+          $order->  CustomerID=$cusid;
           $order->   OrderAmount=$request->get('OrderAmount');
           $order-> OrderShipName=$request->get('OrderShipName');
           $order-> OrderShipAddress=$request->get('OrderShipAddress');
